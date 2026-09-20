@@ -256,13 +256,13 @@ function renderGallery() {
           : ''}
 
         <!-- Favorito -->
-        <button class="item-fav-btn ${item.favorito ? 'active' : ''}"
+        <button class="btn item-fav-btn ${item.favorito ? 'active' : ''}"
                 data-action="fav"
                 data-id="${item.id}"
                 title="${item.favorito ? 'Remover favorito' : 'Favoritar'}"
                 aria-label="${item.favorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}"
                 aria-pressed="${item.favorito}">
-          <i class="bi bi-heart"></i>
+          <i class="bi ${item.favorito ? 'bi-heart-fill' : 'bi-heart'}"></i>
         </button>
 
         <!-- Seleção -->
@@ -291,10 +291,10 @@ function renderContextBar() {
   info.textContent = `${n} ${n === 1 ? 'selecionado' : 'selecionados'}`;
 
   actions.innerHTML = `
-    <button class="ctx-action-btn accent" data-ctx="share">
+    <button class="btn ctx-action-btn accent" data-ctx="share">
       <i class="bi bi-share"></i> Compartilhar
     </button>
-    <button class="ctx-action-btn danger" data-ctx="delete">
+    <button class="btn ctx-action-btn danger" data-ctx="delete">
       <i class="bi bi-trash3"></i> Excluir
     </button>
   `;
@@ -345,7 +345,7 @@ function toggleFavorite(id) {
 
   showToast(
     item.favorito
-      ? '<i class="bi bi-heart"></i> Adicionado aos favoritos'
+      ? '<i class="bi bi-heart-fill"></i> Adicionado aos favoritos'
       : '<i class="bi bi-heart"></i> Removido dos favoritos',
     'info'
   );
@@ -390,7 +390,7 @@ function renderLightboxMeta() {
   favBtn.classList.toggle('active', item.favorito);
   favBtn.setAttribute('aria-label', item.favorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
   favBtn.setAttribute('aria-pressed', String(item.favorito));
-  favIcon.className = 'bi bi-heart';
+  favIcon.className = item.favorito ? 'bi bi-heart-fill' : 'bi bi-heart';
 
   // Badge compartilhado
   const sharedBadge = document.getElementById('lb-shared-badge');
@@ -411,6 +411,14 @@ function renderLightboxMeta() {
   document.getElementById('btn-lb-next').disabled = idx >= ids.length - 1;
 }
 
+function playLbSlide(dir) {
+  const wrap = document.querySelector('#overlay-lightbox .lb-img-wrap');
+  if (!wrap) return;
+  wrap.classList.remove('lb-anim-next', 'lb-anim-prev');
+  void wrap.offsetWidth;
+  wrap.classList.add(dir > 0 ? 'lb-anim-next' : 'lb-anim-prev');
+}
+
 function lbNavigate(dir) {
   const ids = getVisibleIds();
   const idx = ids.indexOf(state.lightboxId);
@@ -418,6 +426,7 @@ function lbNavigate(dir) {
   if (next >= 0 && next < ids.length) {
     state.lightboxId = ids[next];
     renderLightboxMeta();
+    playLbSlide(dir);
   }
 }
 
@@ -654,7 +663,7 @@ function updateCameraThumb() {
 function showToast(html, type = 'success') {
   const area = document.getElementById('toast-area');
   const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
+  toast.className = `toast d-flex align-items-center ${type}`;
   toast.innerHTML = html;
   area.appendChild(toast);
 
@@ -749,10 +758,22 @@ function initEvents() {
   });
 
   // Ordenação
-  document.getElementById('sort-select').addEventListener('change', e => {
-    state.sort = e.target.value;
-    document.getElementById('gal-sort-label').textContent = state.sort === 'recentes' ? 'Mais recentes' : 'Mais antigos';
+  const sortBtn = document.getElementById('btn-sort');
+  const sortIcon = document.getElementById('sort-icon');
+  const sortLabel = document.getElementById('gal-sort-label');
+
+  function applySort(sort) {
+    state.sort = sort;
+    const recent = sort === 'recentes';
+    sortIcon.className = recent ? 'bi bi-sort-down' : 'bi bi-sort-up';
+    sortBtn.title = recent ? 'Mais recentes' : 'Mais antigos';
+    sortBtn.setAttribute('aria-label', recent ? 'Ordenar: mais recentes' : 'Ordenar: mais antigos');
+    sortLabel.textContent = recent ? 'Mais recentes' : 'Mais antigos';
     renderGallery();
+  }
+
+  sortBtn.addEventListener('click', () => {
+    applySort(state.sort === 'recentes' ? 'antigos' : 'recentes');
   });
 
   // Botão selecionar

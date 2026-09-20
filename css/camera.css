@@ -1,0 +1,481 @@
+/* ─── TELA: CÂMERA ─── */
+.camera-viewfinder {
+  position: relative;
+  flex: 1;
+  background:
+    url('../assets/media/park-swing.png')
+    center / cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.camera-viewfinder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.55) 0%,
+    transparent 22%,
+    transparent 68%,
+    rgba(0,0,0,.75) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* HUD superior */
+.cam-hud-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 52px 20px 16px;
+}
+
+.cam-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 5px 12px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.3s;
+}
+
+.cam-status.shake {
+  border-color: rgba(245, 158, 11, 0.6);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.cam-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+  transition: background 0.3s, box-shadow 0.3s;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.cam-status-dot.shake {
+  background: var(--yellow);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  animation: shake-anim 0.15s linear infinite;
+}
+
+.cam-status-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  transition: color 0.3s;
+}
+
+.cam-status-text.shake {
+  color: var(--yellow);
+}
+
+.cam-top-actions {
+  display: flex;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.cam-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s;
+}
+
+.cam-icon-btn:active {
+  background: rgba(255,255,255,0.15);
+}
+
+@media (hover: hover) {
+  .cam-icon-btn:hover {
+    background: rgba(255,255,255,0.15);
+  }
+}
+
+/* Foco */
+.focus-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  z-index: 2;
+  transition: opacity 0.5s;
+}
+
+.focus-frame.shake-mode {
+  animation: frame-shake 0.12s linear infinite;
+  opacity: 0.6;
+}
+
+.focus-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--green);
+  border-style: solid;
+}
+
+.focus-corner.tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.focus-corner.tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.focus-corner.bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.focus-corner.br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+.focus-corner.shake {
+  border-color: var(--yellow);
+}
+
+.focus-center-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green-glow);
+  transition: background 0.3s;
+}
+
+.focus-center-dot.shake {
+  background: var(--yellow);
+}
+
+/* Modos */
+.cam-modes {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 3px;
+  backdrop-filter: blur(8px);
+}
+
+.cam-mode {
+  padding: 5px 14px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.2s, background 0.2s;
+}
+
+.cam-mode.active {
+  background: var(--purple);
+  color: #fff;
+}
+
+/* Controles inferiores */
+.cam-controls {
+  position: absolute;
+  bottom: 30px;
+  left: 0; right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 32px;
+}
+
+.cam-thumb-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.3);
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.18s;
+}
+
+.cam-thumb-btn:active {
+  transform: scale(0.93);
+}
+
+.cam-thumb-btn img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+.cam-thumb-count {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 3px 4px;
+  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 60%);
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cam-capture-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+
+.cam-capture-btn:active {
+  transform: scale(0.92);
+}
+
+.cam-capture-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  transition: background 0.15s;
+}
+
+.cam-capture-btn:active .cam-capture-ring {
+  background: rgba(255,255,255,0.7);
+}
+
+.cam-flip-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s, transform 0.3s;
+}
+
+.cam-flip-btn:active {
+  background: rgba(255,255,255,0.2);
+  transform: rotate(180deg);
+}
+
+/* Flash de captura */
+.cam-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  animation: flash-anim 0.35s ease forwards;
+}
+
+
+/* Aparência das telas */
+/* Câmera */
+.camera-viewfinder {
+  background-image: linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.44)), url('../assets/media/park-swing.png');
+  background-position: center;
+}
+
+.camera-viewfinder::before {
+  background: linear-gradient(to bottom, rgba(0,0,0,.3), transparent 25%, transparent 65%, rgba(0,0,0,.65));
+}
+
+.cam-hud-top {
+  padding: max(35px, env(safe-area-inset-top)) 24px 0;
+}
+
+.cam-status {
+  background: #20bb67;
+  border: 0;
+  padding: 5px 15px;
+  gap: 5px;
+}
+
+.cam-status.shake {
+  background: #dfbd13;
+  border: 0;
+}
+
+.cam-status-dot, .cam-status-dot.shake {
+  background: white;
+  box-shadow: none;
+  animation: none;
+}
+
+.cam-status-text, .cam-status-text.shake {
+  color: white;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+.cam-top-actions {
+  gap: 20px;
+}
+
+#app .cam-icon-btn {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  color: #fff;
+  border: 0;
+  font-size: 21px;
+}
+
+.cam-icon-btn.active {
+  color: #69b4ff;
+}
+
+.camera-grid {
+  position: absolute;
+  z-index: 2;
+  inset: 10.5% 5% calc(3.5% + 188px);
+  border: 1px solid rgba(255,255,255,.3);
+  background-image: linear-gradient(to bottom, transparent calc(100% - 1px), rgba(255,255,255,.3) 0);
+  background-size: 100% 33.333%;
+  background-repeat: repeat-y;
+  pointer-events: none;
+}
+
+.camera-grid::before,
+.camera-grid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255,255,255,.3);
+}
+
+.camera-grid::before {
+  left: 33.333%;
+}
+
+.camera-grid::after {
+  left: 66.666%;
+}
+
+.focus-frame {
+  width: 31%;
+  height: 15%;
+  top: 42.5%;
+}
+
+.focus-corner {
+  width: 24px;
+  height: 24px;
+  border-width: 0;
+}
+
+.focus-corner.tl {
+  border-width: 4px 0 0 4px;
+  border-radius: 5px 0 0;
+}
+
+.focus-corner.tr {
+  border-width: 4px 4px 0 0;
+  border-radius: 0 5px 0 0;
+}
+
+.focus-corner.bl {
+  border-width: 0 0 4px 4px;
+  border-radius: 0 0 0 5px;
+}
+
+.focus-corner.br {
+  border-width: 0 4px 4px 0;
+  border-radius: 0 0 5px;
+}
+
+.cam-modes {
+  bottom: calc(3.5% + 146px);
+  background: transparent;
+  border: 0;
+  gap: 19px;
+}
+
+.cam-mode {
+  background: transparent !important;
+  padding: 4px 1px;
+  font-size: 12px;
+  letter-spacing: .11em;
+  color: #c4c4c4;
+}
+
+.cam-mode.active {
+  color: #6eb7ff;
+}
+
+.cam-controls {
+  bottom: 3.5%;
+  padding: 0 12%;
+}
+
+.cam-capture-btn {
+  width: 128px;
+  height: 128px;
+  border-color: #dedede;
+}
+
+.cam-capture-ring {
+  width: 72px;
+  height: 72px;
+  background: #262626;
+}
+
+.cam-capture-btn.video-mode .cam-capture-ring {
+  background: #992b29;
+}
+
+.cam-capture-btn.video-mode.recording .cam-capture-ring {
+  border-radius: 16px;
+  width: 54px;
+  height: 54px;
+}
+
+.cam-thumb-btn {
+  width: 48px;
+  height: 48px;
+  border-color: #9c9c9c;
+}
+
+.cam-flip-btn {
+  width: 48px;
+  height: 48px;
+  background: #2a2a2a;
+  border-color: #777;
+}
+
+#app .cam-flip-btn {
+  background: #2a2a2a;
+  color: #fff;
+}

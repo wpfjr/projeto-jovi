@@ -1,0 +1,167 @@
+/* Base: reset, tokens, app e utilitários */
+
+/* RESET & BASE */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, select {
+  font-family: inherit;
+  outline: none;
+  border: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* DESIGN TOKENS */
+:root {
+  /* Base neutra inspirada na identidade visual da JOVI */
+  --bg-deep:    #000000;
+  --bg-surface: #0b0c10;
+  --bg-card:    #12151b;
+  --bg-raised:  #1b2029;
+  --bg-hover:   #242933;
+
+  /* Azul institucional JOVI — os nomes foram preservados para não
+     quebrar os componentes que já consomem estes tokens. */
+  --purple:        #415fff;
+  --purple-light:  #546fff;
+  --purple-dim:    rgba(65, 95, 255, 0.18);
+  --purple-glow:   rgba(65, 95, 255, 0.35);
+  --purple-border: rgba(65, 95, 255, 0.45);
+  --green:      #22c55e;
+  --green-glow: rgba(34, 197, 94, 0.4);
+  --yellow:     #f59e0b;
+  --red:        #ef4444;
+  --red-dim:    rgba(239, 68, 68, 0.18);
+
+  --text:      #ffffff;
+  --text-sec:  #b8bec9;
+  --text-muted:#6f7683;
+
+  --border:        rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.13);
+
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+}
+
+/* APP SHELL */
+#app {
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-deep);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 80px rgba(65, 95, 255, 0.12),
+    0 32px 80px rgba(0, 0, 0, 0.8);
+}
+
+/* SCREENS */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+  overflow: hidden;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+/* UTILITIES */
+.hidden { display: none !important; }
+
+/* ANIMATIONS */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@keyframes shake-anim {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(-2px, 1px); }
+  50%  { transform: translate(2px, -1px); }
+  75%  { transform: translate(-1px, 2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes frame-shake {
+  0%   { transform: translate(-50%, -50%) translate(0, 0); }
+  25%  { transform: translate(-50%, -50%) translate(-3px, 2px); }
+  50%  { transform: translate(-50%, -50%) translate(3px, -2px); }
+  75%  { transform: translate(-50%, -50%) translate(-2px, 3px); }
+  100% { transform: translate(-50%, -50%) translate(0, 0); }
+}
+
+@keyframes flash-anim {
+  0%   { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-12px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-8px) scale(0.94); }
+}
+
+/* DESKTOP: phone frame */
+@media (min-width: 500px) {
+  body {
+    background: #030309;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #app {
+    border-radius: 40px;
+    border: 1px solid rgba(255,255,255,0.07);
+    height: min(900px, 94dvh);
+  }
+}
+

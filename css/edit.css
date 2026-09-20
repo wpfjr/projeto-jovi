@@ -1,0 +1,385 @@
+/* ─── TELA: EDIÇÃO ─── */
+#screen-edit {
+  background: var(--bg-deep);
+}
+
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 52px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.edit-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-sec);
+  font-size: 18px;
+  transition: background 0.18s, color 0.18s;
+}
+
+@media (hover: hover) {
+  .edit-back-btn:hover {
+    background: var(--bg-raised);
+    color: var(--text);
+  }
+}
+
+.edit-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.edit-save-btn {
+  padding: 7px 16px;
+  border-radius: 20px;
+  background: var(--purple);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.18s, transform 0.15s;
+}
+
+@media (hover: hover) {
+  .edit-save-btn:hover {
+    background: var(--purple-light);
+  }
+}
+
+.edit-save-btn:active {
+  transform: scale(0.95);
+}
+
+/* Canvas */
+.edit-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.edit-img-wrap {
+  position: relative;
+  max-height: 100%;
+  max-width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.edit-img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  border-radius: var(--radius);
+  transition: filter 0.1s linear;
+}
+
+.edit-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 33.333% 33.333%;
+}
+
+.edit-crop-overlay {
+  position: absolute;
+  inset: 10%;
+  border: 2px solid rgba(255,255,255,0.8);
+  pointer-events: none;
+}
+
+.crop-handle {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-color: #fff;
+  border-style: solid;
+}
+
+.crop-handle.tl { top: -1px; left: -1px; border-width: 3px 0 0 3px; }
+.crop-handle.tr { top: -1px; right: -1px; border-width: 3px 3px 0 0; }
+.crop-handle.bl { bottom: -1px; left: -1px; border-width: 0 0 3px 3px; }
+.crop-handle.br { bottom: -1px; right: -1px; border-width: 0 3px 3px 0; }
+
+/* Edit panel */
+.edit-panel {
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-slider-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+}
+
+.slider-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.slider-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-range {
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 11px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.edit-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--bg-raised);
+}
+
+.edit-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6.5px;
+  border-radius: 50%;
+  background: var(--purple-light);
+  box-shadow: 0 0 6px var(--purple-glow);
+  cursor: pointer;
+}
+
+.edit-range::-moz-range-track {
+  height: 3px;
+  border: none;
+  border-radius: 999px;
+  background: var(--bg-raised);
+}
+
+.edit-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--purple-light);
+  cursor: pointer;
+}
+
+/* Tool buttons */
+.edit-tools-row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.edit-tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 0.18s, background 0.18s;
+}
+
+.edit-tool-btn i {
+  font-size: 18px;
+}
+
+.edit-tool-btn.active {
+  color: var(--purple-light);
+  background: var(--purple-dim);
+}
+
+@media (hover: hover) {
+  .edit-tool-btn:hover {
+    color: var(--purple-light);
+    background: var(--purple-dim);
+  }
+}
+
+
+/* Edição */
+.edit-header {
+  padding: max(20px, env(safe-area-inset-top)) 16px 10px;
+  z-index: 2;
+  border: 0;
+}
+
+#app .edit-back-btn {
+  background: #292929;
+  color: white;
+  border-radius: 20px;
+  width: 50px;
+  height: 28px;
+}
+
+#app .edit-save-btn {
+  background: #69b4ff;
+  color: #111;
+}
+
+.edit-canvas {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+}
+
+.edit-img-wrap {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+}
+
+.edit-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+}
+
+.edit-grid-overlay {
+  inset: 5% 5% 26%;
+  border: 1px solid rgba(255,255,255,.2);
+}
+
+.edit-panel {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+  background: #202020;
+  border: 0;
+  border-radius: 28px 28px 0 0;
+  padding: 29px 18px max(14px, env(safe-area-inset-bottom));
+  gap: 19px;
+}
+
+.edit-panel-grip {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 25px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.edit-panel-grip::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  border-radius: 5px;
+  background: #444;
+}
+
+.edit-sliders {
+  gap: 7px;
+}
+
+.edit-slider-row {
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 20px;
+}
+
+.slider-label {
+  font-size: 12px;
+  letter-spacing: 0;
+  color: #b4b4b4;
+}
+
+.slider-track {
+  width: 100%;
+  gap: 0;
+}
+
+
+.edit-range {
+  width: 100%;
+  height: 11px;
+  background: transparent;
+}
+
+.edit-range::-webkit-slider-runnable-track {
+  height: 3px;
+  background: #363636;
+}
+
+.edit-range::-webkit-slider-thumb {
+  width: 11px;
+  height: 11px;
+  margin-top: -4px;
+  background: #69b4ff;
+  box-shadow: none;
+}
+
+.edit-range::-moz-range-track {
+  height: 3px;
+  background: #363636;
+}
+
+.edit-range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  background: #69b4ff;
+}
+
+.edit-tools-row {
+  justify-content: space-between;
+}
+
+#app .edit-tool-btn {
+  flex: 1;
+  padding: 4px 2px;
+  gap: 3px;
+  color: #b4b4b4;
+  background: transparent;
+  font-size: 11px;
+}
+
+#app .edit-tool-btn i {
+  font-size: 18px;
+}
+
+#app .edit-tool-btn.active {
+  color: #111;
+  background: #69b4ff;
+}

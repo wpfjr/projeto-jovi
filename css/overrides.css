@@ -1,0 +1,96 @@
+/* Hover, toque e compatibilidade Bootstrap */
+
+@media (hover: hover) {
+  #app .cam-flip-btn:hover,
+  #app .gal-back-btn:hover,
+  #app .gal-select-btn:hover,
+  #app .gal-tab:hover,
+  #app .gal-sort-btn:hover,
+  #app .edit-back-btn:hover,
+  #app .edit-tool-btn:hover,
+  #app .edit-save-btn:hover {
+    background: #69b4ff;
+    color: #111;
+    border-color: #69b4ff;
+  }
+}
+
+#app .cam-flip-btn:active,
+#app .gal-back-btn:active,
+#app .gal-select-btn:active,
+#app .gal-tab:active,
+#app .gal-sort-btn:active,
+#app .edit-back-btn:active,
+#app .edit-tool-btn:active {
+  background: #69b4ff;
+  color: #111;
+  border-color: #69b4ff;
+}
+
+/* Bootstrap — preserva o visual atual e só anula o CSS padrão */
+#app .btn {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: transparent;
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-disabled-opacity: 1;
+  box-shadow: none;
+  text-decoration: none;
+  line-height: 1;
+}
+
+#app .btn:focus,
+#app .btn:focus-visible,
+#app .form-control:focus,
+#app .form-select:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+#app .cam-icon-btn,
+#app .cam-flip-btn,
+#app .cam-thumb-btn,
+#app .cam-capture-btn,
+#app .gal-back-btn,
+#app .gal-search-clear,
+#app .gal-sort-btn,
+#app .edit-back-btn,
+#app .lb-close,
+#app .lb-nav-btn,
+#app .item-fav-btn,
+#app .platform-btn {
+  padding: 0;
+}
+
+#app .gal-search-input.form-control {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  height: auto;
+  min-height: 0;
+  line-height: 1.2;
+  color: inherit;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 0;
+}
+
+#app .gal-search-input.form-control:focus {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+
+#app .lb-shared-badge.badge {
+  --bs-badge-padding-x: 10px;
+  --bs-badge-padding-y: 4px;
+  --bs-badge-font-size: 11px;
+  --bs-badge-font-weight: 600;
+  --bs-badge-color: #fff;
+  --bs-badge-border-radius: 8px;
+  font-weight: 600;
+}
