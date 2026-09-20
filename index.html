@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>JOVI Smart Capture</title>
+  <link href="assets/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- TELA: CÂMERA -->
+  <div class="screen active" id="screen-camera">
+    <div class="camera-viewfinder">
+
+      <!-- HUD Superior -->
+      <div class="cam-hud-top d-flex justify-content-between align-items-center">
+        <div class="cam-status" id="cam-status">
+          <span class="cam-status-dot" id="cam-dot"></span>
+          <span class="cam-status-text" id="cam-status-text">PRONTO</span>
+        </div>
+        <div class="cam-top-actions">
+          <button class="cam-icon-btn" id="btn-flash" title="Flash" aria-label="Desativar flash" aria-pressed="true">
+            <i class="bi bi-lightning-charge-fill"></i>
+          </button>
+          <button class="cam-icon-btn" id="btn-camera-grid" title="Ativar grade" aria-label="Ativar grade" aria-pressed="false">
+            <i class="bi bi-aspect-ratio"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="camera-grid hidden" id="camera-grid" aria-hidden="true"></div>
+
+      <!-- Overlay de foco (moldura verde) -->
+      <div class="focus-frame" id="focus-frame">
+        <div class="focus-corner tl"></div>
+        <div class="focus-corner tr"></div>
+        <div class="focus-corner bl"></div>
+        <div class="focus-corner br"></div>
+        <div class="focus-center-dot"></div>
+      </div>
+
+      <!-- Modos de captura -->
+      <div class="cam-modes">
+        <button class="cam-mode" data-mode="video">VÍDEO</button>
+        <button class="cam-mode active" data-mode="foto">FOTO</button>
+        <button class="cam-mode" data-mode="pro">PRO</button>
+      </div>
+
+      <!-- Controles inferiores -->
+      <div class="cam-controls">
+        <button class="cam-thumb-btn" id="btn-cam-to-gallery" title="Ir para galeria">
+          <img id="cam-thumb-img" src="" alt="Última captura">
+        </button>
+
+        <button class="cam-capture-btn" id="btn-capture" aria-label="Capturar foto">
+          <div class="cam-capture-ring"></div>
+        </button>
+
+        <button class="cam-flip-btn" id="btn-flip-cam" title="Virar câmera" aria-label="Virar câmera">
+          <i class="bi bi-arrow-repeat"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA: GALERIA -->
+  <div class="screen" id="screen-gallery">
+
+    <!-- Header fixo -->
+    <div class="gal-header" id="gal-header">
+      <div class="gal-header-row d-flex justify-content-between align-items-center">
+        <button class="gal-back-btn" id="btn-gallery-back" aria-label="Voltar para câmera"><i class="bi bi-chevron-left"></i></button>
+        <div class="gal-brand">Galeria</div>
+        <button class="gal-select-btn" id="btn-select">Selecionar</button>
+      </div>
+      <div class="gal-tabs" id="gal-tabs">
+        <button class="gal-tab active" data-filter="tudo">Tudo</button>
+        <button class="gal-tab" data-filter="fotos">Foto</button>
+        <button class="gal-tab" data-filter="videos">Vídeo</button>
+        <button class="gal-tab" data-filter="favoritos">Favoritos</button>
+      </div>
+
+      <!-- Busca + ordenação -->
+      <div class="gal-search-row">
+        <div class="gal-search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" class="gal-search-input" id="search-input" placeholder="Buscar por nome">
+          <button class="gal-search-clear hidden" id="btn-search-clear">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="gal-sort-wrap"><select class="gal-sort-select" id="sort-select" title="Ordenar">
+          <option value="recentes">Mais recentes</option>
+          <option value="antigos">Mais antigos</option>
+        </select><i class="bi bi-sort-down"></i></div>
+      </div>
+
+      <div class="gal-meta-row"><span id="gal-count">20 itens</span><span id="gal-sort-label">Mais recentes</span></div>
+    </div>
+
+    <!-- Grade de mídia -->
+    <div class="gal-grid" id="gal-grid"></div>
+
+    <!-- Estado vazio -->
+    <div class="gal-empty hidden" id="gal-empty">
+      <i class="bi bi-images"></i>
+      <p>Nenhum item encontrado</p>
+    </div>
+
+    <!-- Barra de ações contextual (modo seleção) -->
+    <div class="ctx-bar hidden" id="ctx-bar">
+      <div class="ctx-bar-info"><strong id="ctx-bar-info">0 selecionados</strong><small>Ações em lote disponíveis</small></div>
+      <div class="ctx-bar-actions" id="ctx-bar-actions"></div>
+    </div>
+
+  </div>
+
+  <!-- TELA: EDIÇÃO -->
+  <div class="screen" id="screen-edit">
+
+    <div class="edit-header">
+      <button class="edit-back-btn" id="btn-edit-back" aria-label="Voltar para galeria">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <span class="edit-title">Editar</span>
+      <button class="edit-save-btn" id="btn-edit-save">Salvar</button>
+    </div>
+
+    <div class="edit-canvas">
+      <div class="edit-img-wrap" id="edit-img-wrap">
+        <img id="edit-img" src="" alt="Imagem em edição" class="edit-img">
+        <div class="edit-grid-overlay hidden" id="edit-grid-overlay"></div>
+        <div class="edit-crop-overlay hidden" id="edit-crop-overlay">
+          <div class="crop-handle tl"></div>
+          <div class="crop-handle tr"></div>
+          <div class="crop-handle bl"></div>
+          <div class="crop-handle br"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-panel" id="edit-panel">
+      <div class="edit-panel-grip" aria-hidden="true"></div>
+
+      <!-- Sliders -->
+      <div class="edit-sliders">
+        <div class="edit-slider-row">
+          <label class="slider-label" for="sl-brightness">Brilho</label>
+          <div class="slider-track">
+            <input type="range" min="50" max="200" value="100" class="edit-range" id="sl-brightness">
+          </div>
+        </div>
+        <div class="edit-slider-row">
+          <label class="slider-label" for="sl-contrast">Contraste</label>
+          <div class="slider-track">
+            <input type="range" min="50" max="200" value="100" class="edit-range" id="sl-contrast">
+          </div>
+        </div>
+        <div class="edit-slider-row">
+          <label class="slider-label" for="sl-saturation">Saturação</label>
+          <div class="slider-track">
+            <input type="range" min="0" max="200" value="100" class="edit-range" id="sl-saturation">
+          </div>
+        </div>
+      </div>
+
+      <!-- Ferramentas -->
+      <div class="edit-tools-row">
+        <button class="edit-tool-btn" id="btn-tool-crop">
+          <i class="bi bi-crop"></i>
+          <span>Recortar</span>
+        </button>
+        <button class="edit-tool-btn" id="btn-tool-rotate">
+          <i class="bi bi-arrow-clockwise"></i>
+          <span>Girar</span>
+        </button>
+        <button class="edit-tool-btn" id="btn-tool-grid">
+          <i class="bi bi-grid-3x3"></i>
+          <span>Grid</span>
+        </button>
+        <button class="edit-tool-btn" id="btn-tool-reset">
+          <i class="bi bi-arrow-counterclockwise"></i>
+          <span>Resetar</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OVERLAY: LIGHTBOX (visualização individual) -->
+  <div class="overlay hidden" id="overlay-lightbox">
+
+    <div class="lightbox">
+      <div class="lb-header d-flex justify-content-between align-items-center">
+        <div><div class="lb-name" id="lb-name">Foto</div><div class="lb-date" id="lb-date"></div></div>
+        <button class="lb-close" id="btn-lb-close" aria-label="Fechar visualização"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="lb-image-area">
+        <button class="lb-nav-btn prev" id="btn-lb-prev" aria-label="Item anterior">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <div class="lb-img-wrap">
+          <img id="lb-img" src="" alt="" class="lb-img">
+          <div class="lb-shared-badge hidden" id="lb-shared-badge">
+            <i class="bi bi-link-45deg"></i> Compartilhado
+          </div>
+          <div class="lb-type-badge" id="lb-type-badge"></div>
+        </div>
+        <button class="lb-nav-btn next" id="btn-lb-next" aria-label="Próximo item">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="lb-actions d-flex justify-content-around align-items-center">
+        <button class="lb-action-btn" id="btn-lb-fav" aria-label="Favoritar"><i class="bi bi-heart" id="lb-fav-icon"></i></button>
+        <button class="lb-action-btn" id="btn-lb-edit" aria-label="Editar">
+          <i class="bi bi-pencil"></i>
+          <span>Editar</span>
+        </button>
+        <button class="lb-action-btn accent" id="btn-lb-share" aria-label="Compartilhar">
+          <i class="bi bi-share"></i>
+          <span>Compartilhar</span>
+        </button>
+        <button class="lb-action-btn danger" id="btn-lb-delete" aria-label="Excluir">
+          <i class="bi bi-trash3"></i>
+          <span>Excluir</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- OVERLAY: COMPARTILHAR (bottom sheet) -->
+  <div class="overlay hidden" id="overlay-share">
+    <div class="overlay-backdrop" id="share-backdrop"></div>
+    <div class="bottom-sheet" id="share-sheet">
+      <div class="sheet-grip"></div>
+      <div class="sheet-title">COMPARTILHAR</div>
+      <div class="sheet-subtitle" id="share-subtitle">Compartilhe suas fotos nas redes</div>
+
+      <div class="share-platforms d-flex justify-content-between align-items-start">
+        <button class="platform-btn" aria-label="Compartilhar no Instagram">
+          <div class="platform-icon insta">
+            <i class="bi bi-instagram"></i>
+          </div>
+          <span>Instagram</span>
+        </button>
+        <button class="platform-btn" aria-label="Compartilhar no TikTok">
+          <div class="platform-icon tiktok">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.89 2.5 2.89 2.89 0 0 1-2.88-2.89 2.89 2.89 0 0 1 2.88-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.67a8.27 8.27 0 0 0 4.84 1.56V6.8a4.85 4.85 0 0 1-1.06-.11z"/>
+            </svg>
+          </div>
+          <span>TikTok</span>
+        </button>
+        <button class="platform-btn" aria-label="Compartilhar no WhatsApp">
+          <div class="platform-icon whats">
+            <i class="bi bi-whatsapp"></i>
+          </div>
+          <span>WhatsApp</span>
+        </button>
+        <button class="platform-btn" aria-label="Compartilhar no Facebook">
+          <div class="platform-icon fb">
+            <i class="bi bi-facebook"></i>
+          </div>
+          <span>Facebook</span>
+        </button>
+      </div>
+
+      <div class="share-extra-actions">
+        <button class="share-extra-btn story-btn" id="btn-create-story">
+          <i class="bi bi-play-circle"></i>
+          Criar Story
+        </button>
+        <button class="share-extra-btn copy-btn" id="btn-copy-link">
+          <i class="bi bi-link-45deg"></i>
+          Copiar Link
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- OVERLAY: CONFIRMAR EXCLUSÃO -->
+  <div class="overlay hidden" id="overlay-delete">
+    <div class="overlay-backdrop" id="delete-backdrop"></div>
+    <div class="bottom-sheet delete-sheet" id="delete-modal">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <h3 class="confirm-title">EXCLUIR</h3>
+      <p class="confirm-desc">Tem certeza que deseja excluir <span id="del-count-text">este item</span>?</p>
+      <div class="confirm-btns">
+        <button class="confirm-btn danger" id="btn-del-confirm">Confirmar</button>
+        <button class="confirm-btn cancel" id="btn-del-cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- TOAST -->
+  <div id="toast-area"></div>
+
+</div><!-- #app -->
+
+<script src="app.js"></script>
+</body>
+</html>
